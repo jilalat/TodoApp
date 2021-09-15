@@ -11,7 +11,7 @@ font-family: 'Open Sans', sans-serif;
 font-family: 'Quicksand', sans-serif;}
 
 body {
-  background-image: url(./images/Main-background.svg);
+  background-image: url(./images/main-background.svg);
 /* overflow: hidden; */
 /* background-repeat: no-repeat; */
 /* height: 100% hv; */
@@ -52,7 +52,7 @@ section {
   /* background: radial-gradient(50% 50% at 50% 50%, #E02D6F 0%, #E8999F 100%);
 filter: blur(404px);
 transform: rotate(-34.04deg); */
-background-image: url(./images/Frame.svg);
+background-image: url(./images/frame.svg);
 /* height: 886px; */
 }
 .flex-btwn {
