@@ -1,113 +1,131 @@
 'use strict';
 
-
-
 // modals & overlay
 let modal = document.querySelectorAll('.modal');
 let overlay = document.querySelector('.overlay');
 let closeModalBtn = document.querySelectorAll('.close-modal');
 let cancelModalBtn = document.querySelectorAll('.cancel-modal');
-let closeModal = () => {
-  modal.classList.add('hidden');
-  overlay.classList.add('hidden');
-  cancelModalBtn.classList.add('hidden');
-};
-let pressEscape = esc => {
-  if (esc.key === 'Escape' && !modal.classList.contains('hidden')) {
-    closeModal();
-  }
-};
 
-// modal.forEach(ev => ev.addEventListener('click', closeModal));
-// document.addEventListener('keydown', pressEscape);
-// closeModalBtn.addEventListener('click', closeModal);
-// overlay.addEventListener('click', closeModal);
-// cancelModalBtn.addEventListener('click', closeModal);
-
-// let modal = document.querySelector('.modal');
-// let showModalBtn = document.querySelectorAll('.btn--show-modal');
-
-// let section1 = document.getElementById('section--1');
-
-// let scrollToBtn = document.querySelector('.btn--scroll-to');
-
-// let toggleModal = () => {
-//   modal.classList.toggle('hidden');
-//   overlay.classList.toggle('hidden');
-// };
-
-// showModalBtn.forEach(Btn => Btn.addEventListener('click', toggleModal));
-
-// overlay.addEventListener('click', toggleModal);
-// closeModalBtn.addEventListener('click', toggleModal);
-// document.addEventListener('keydown', pressEscape);
-// scrollToBtn.addEventListener('click', () => {
-//   section1.scrollIntoView({ behavior: 'smooth' });
-// });
+for (let i = 0; i < modal.length; i++) {
+  cancelModalBtn[i].addEventListener('click', () => {
+    modal[i].classList.add('hidden');
+    overlay.classList.add('hidden');
+  });
+  overlay.addEventListener('click', () => {
+    modal[i].classList.add('hidden');
+    overlay.classList.add('hidden');
+  });
+  closeModalBtn[i].addEventListener('click', () => {
+    modal[i].classList.add('hidden');
+    overlay.classList.add('hidden');
+  });
+  document.addEventListener('keydown', esc => {
+    if (esc.key === 'Escape' && !modal[i].classList.contains('hidden')) {
+      modal[i].classList.add('hidden');
+      overlay.classList.add('hidden');
+    }
+  });
+}
 
 //top section :
 let addSearchDiv = document.querySelector('.add-and-search-icons');
 let add = document.querySelector('.add');
 let search = document.querySelector('.search');
 
-let addSection = document.querySelector('.add-section');
+let addSection = document.querySelector('.submit-bar');
 let addNote = document.querySelector('.add-note');
 let submitBtn = document.querySelector('.submit-btn');
 
-let searchSection = document.querySelector('.search-section');
+let searchSection = document.querySelector('.search-bar');
 let searchNote = document.querySelector('.search-note');
 let loupe = document.querySelector('.loupe');
 
 add.addEventListener('mouseenter', () => {
-  addSearchDiv.classList.toggle('hidden');
-  addSection.classList.toggle('hidden');
-  addNote.classList.toggle('hidden');
-
-
-
-
-
-  if (addNote.length === 0) {
-    submitBtn.classList.remove('hidden');
-  }
-
+  addSearchDiv.classList.add('hidden');
+  addSection.classList.remove('hidden');
+  addNote.classList.remove('hidden');
+  submitBtn.classList.add('hidden');
 });
+
+addNote.addEventListener('input', () => {
+  if (addNote.length !== 0) submitBtn.classList.remove('hidden');
+});
+
 addSection.addEventListener('mouseleave', () => {
-  addSearchDiv.classList.toggle('hidden');
-  addSection.classList.toggle('hidden');
-  addNote.classList.toggle('hidden');
-
-
-
+  addSearchDiv.classList.remove('hidden');
+  addSection.classList.add('hidden');
+  addNote.classList.add('hidden');
+  if (addNote.length !== 0) addNote.value = '';
 });
+
 search.addEventListener('mouseenter', () => {
-  addSearchDiv.classList.toggle('hidden');
-  searchSection.classList.toggle('hidden');
-  searchNote.classList.toggle('hidden');
-  loupe.classList.toggle('hidden');
+  addSearchDiv.classList.add('hidden');
+  searchSection.classList.remove('hidden');
+  searchNote.classList.remove('hidden');
+  loupe.classList.add('hidden');
 });
+
+searchNote.addEventListener('input', () => {
+  if (searchNote.value !== 0) loupe.classList.remove('hidden');
+});
+
 searchSection.addEventListener('mouseleave', () => {
-  addSearchDiv.classList.toggle('hidden');
-  searchSection.classList.toggle('hidden');
-  searchNote.classList.toggle('hidden');
-  loupe.classList.toggle('hidden');
+  addSearchDiv.classList.remove('hidden');
+  searchSection.classList.add('hidden');
+  searchNote.classList.add('hidden');
+  if (searchNote.value !== 0) searchNote.value = '';
 });
 
 // greeting date :
 
-let date = document.querySelector('.date');
-// date.textContent = ""
+let date = new Date();
+let today = date.getDate();
+let month = date.getMonth();
+let year = date.getFullYear();
 
-//notes hover :
-let notes = document.getElementsByClassName('notes');
+let ordinalNumbers = () => {
+  let ordinalIndicator;
+  if (today === 1) {
+    ordinalIndicator = 'st';
+  } else if (today === 2) {
+    ordinalIndicator = 'nd';
+  } else if (today === 3) {
+    ordinalIndicator = 'rd';
+  } else {
+    ordinalIndicator = 'th';
+  }
+  return ordinalIndicator;
+};
 
+let monthNames = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
-// check Notes
+document.querySelector('.date').textContent = `${today}${ordinalNumbers()} ${
+  monthNames[month]
+}, ${year}`;
+
+//note :
+let note = document.querySelectorAll('.note');
+let noteList = document.querySelector('.note-list');
+
+// check/uncheck note
 let uncheckedIcon = document.querySelectorAll('.unchecked-icon');
 let checkedIcon = document.querySelectorAll('.checked-icon');
 let lineThrough = document.querySelectorAll('.line-through');
 let tasks = document.querySelectorAll('.task');
-for (let i = 0; i < notes.length; i++) {
+for (let i = 0; i < note.length; i++) {
   tasks[i].addEventListener('click', () => {
     checkedIcon[i].classList.toggle('hidden');
     uncheckedIcon[i].classList.toggle('hidden');
@@ -125,80 +143,132 @@ for (let i = 0; i < notes.length; i++) {
   });
 }
 
-// Edit Notes
-// let editNoteHover = () => {
-//   blackEditIcon[j].classList.toggle('hidden');
-//   colorEditIcon.classList.toggle('hidden');
-// };
-// let editNote = () => {
-//   editNotesModal.classList.remove('hidden');
-//   overlay.classList.remove('hidden');
-// };
-
-// blackEditIcon.addEventListener('mouseenter', editNoteHover);
-// colorEditIcon.addEventListener('mouseleave', editNoteHover);
-// colorEditIcon.addEventListener('click', editNote);
+// Edit note
 let blackEditIcon = document.querySelectorAll('.edit-icon');
 let colorEditIcon = document.querySelectorAll('.color-edit-icon');
-let editNotesModal = document.querySelector('.update-Notes-modal');
+let editnoteModal = document.querySelector('.update-note-modal');
 
 for (let j = 0; j < blackEditIcon.length; j++) {
   blackEditIcon[j].addEventListener('mouseenter', () => {
-    blackEditIcon[j].classList.toggle('hidden');
-    colorEditIcon[j].classList.toggle('hidden');
+    blackEditIcon[j].classList.add('hidden');
+    colorEditIcon[j].classList.remove('hidden');
   });
   colorEditIcon[j].addEventListener('mouseleave', () => {
-    blackEditIcon[j].classList.toggle('hidden');
-    colorEditIcon[j].classList.toggle('hidden');
+    blackEditIcon[j].classList.remove('hidden');
+    colorEditIcon[j].classList.add('hidden');
   });
   colorEditIcon[j].addEventListener('click', () => {
-    editNotesModal.classList.remove('hidden');
+    editnoteModal.classList.remove('hidden');
     overlay.classList.remove('hidden');
   });
 }
 
-// // Delete Notes
+// Delete note
 let deleteIcon = document.querySelectorAll('.delete-icon');
 let redDeleteIcon = document.querySelectorAll('.red-delete-icon');
-let deleteNotesModal = document.querySelector('.delete-Notes-modal');
+let deletenoteModal = document.querySelector('.delete-note-modal');
 
 for (let j = 0; j < blackEditIcon.length; j++) {
-  notes[j].addEventListener('mouseenter', () => {
-    blackEditIcon[j].classList.toggle('hidden');
-    deleteIcon[j].classList.toggle('hidden');
+  note[j].addEventListener('mouseenter', () => {
+    blackEditIcon[j].classList.remove('hidden');
+    deleteIcon[j].classList.remove('hidden');
   });
-  notes[j].addEventListener('mouseleave', () => {
-    blackEditIcon[j].classList.toggle('hidden');
-    deleteIcon[j].classList.toggle('hidden');
+  note[j].addEventListener('mouseleave', () => {
+    blackEditIcon[j].classList.add('hidden');
+    deleteIcon[j].classList.add('hidden');
+    colorEditIcon[j].classList.add('hidden');
+    redDeleteIcon[j].classList.add('hidden');
   });
   deleteIcon[j].addEventListener('mouseenter', () => {
-    deleteIcon[j].classList.toggle('hidden');
-    redDeleteIcon[j].classList.toggle('hidden');
+    deleteIcon[j].classList.add('hidden');
+    redDeleteIcon[j].classList.remove('hidden');
   });
   redDeleteIcon[j].addEventListener('mouseleave', () => {
-    deleteIcon[j].classList.toggle('hidden');
-    redDeleteIcon[j].classList.toggle('hidden');
+    deleteIcon[j].classList.remove('hidden');
+    redDeleteIcon[j].classList.add('hidden');
   });
   redDeleteIcon[j].addEventListener('click', () => {
-    deleteNotesModal.classList.remove('hidden');
+    deletenoteModal.classList.remove('hidden');
     overlay.classList.remove('hidden');
   });
 }
 
-// let deleteNoteHover = () => {
-//   deleteIcon.classList.toggle('hidden');
-//   redDeleteIcon.classList.toggle('hidden');
-// };
-// let showDeleteNotesModal = () => {
-//   deleteNotesModal.classList.remove('hidden');
-//   overlay.classList.remove('hidden');
-//   // closeModal();
-// };
+//submit :
 
-// let deleteNote = () => {};
+submitBtn.addEventListener('click', e => {
+  e.preventDefault();
+  // let value = addNote.querySelector('input[type="text"]').value
+  // console.log(value);
+console.log(addNote.textContent);
+  // document.createElement('');
+  let newDiv = document.createElement('div');
+  newDiv.setAttribute('class', 'note flex');
+  
+  let newCheckedIcon = document.createElement('img');
+  newCheckedIcon.setAttribute('src', './images/checked.svg');
+  newCheckedIcon.setAttribute('class', 'checked-icon hidden');
+  
+  let newUncheckedIcon = document.createElement('img');
+  newUncheckedIcon.setAttribute('src', './images/unchecked.svg');
+  newUncheckedIcon.setAttribute('class', 'unchecked-icon');
+  
+  let newTask = document.createElement('p');
+  newTask.setAttribute('class',"task");
+  
+  let newSpan = document.createElement('span');
+  newSpan.setAttribute('class',"line-through hidden");
+  
+  let newColorEdit = document.createElement('img');
+  newColorEdit.setAttribute('src', './images/color-edit.svg');
+  newColorEdit.setAttribute('class',"color-edit-icon hidden");
+  
+  let newEditIcon = document.createElement('img');
+  newEditIcon.setAttribute('src', './images/edit.svg');
+  newEditIcon.setAttribute('class',"edit-icon hidden");
+  
+  let newDeleteIcon = document.createElement('img');
+  newDeleteIcon.setAttribute('src', './images/delete.svg');
+  newDeleteIcon.setAttribute('class',"delete-icon hidden");
+  
+  let newRedDeleteIcon = document.createElement('img');
+  newRedDeleteIcon.setAttribute('src', './images/red-delete.svg');
+  newRedDeleteIcon.setAttribute('class',"red-delete-icon hidden");
+  
+  noteList.appendChild(newDiv);
+  newDiv.appendChild(newCheckedIcon);
+  newDiv.appendChild(newUncheckedIcon);
+  newDiv.appendChild(newTask);
+  newDiv.appendChild(newSpan);
+  newDiv.appendChild(newColorEdit);
+  newDiv.appendChild(newEditIcon);
+  newDiv.appendChild(newRedDeleteIcon);
 
-// deleteIcon.forEach(eve => eve.addEventListener('click', deleteNoteHover));
 
-// deleteIcon.addEventListener('mouseenter', deleteNoteHover);
-// redDeleteIcon.addEventListener('mouseleave', deleteNoteHover);
-// redDeleteIcon.addEventListener('click', showDeleteNotesModal);
+});
+
+// update :
+let updateBtn = document.querySelector('.update-btn');
+
+// remove :
+let deleteNote = document.querySelector('.delete-btn');
+for (let i = 0; i < note.length; i++) {
+  deleteNote.addEventListener('click', e => {
+    // let note[i] = e.target.parentElement;
+    // rightSection.removeChild(note[i]);
+    // noteList.removeChild(note[i]);
+    // note[i].parentNode.remove();
+    note[i].parentNode.removeChild(note[i]);
+    // note[i].remove();
+    // break;
+    // return false;
+    modal[i].classList.add('hidden');
+    overlay.classList.add('hidden');
+  });
+}
+
+// del note
+
+// search :
+
+
+
