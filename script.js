@@ -1,11 +1,16 @@
 'use strict';
 
+// let insertHTML = '<div class="note flex"><img class="checked-icon hidden" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task"><span class="line-through hidden"></span></p><img class="color-edit-icon hidden" src="./images/color-edit.svg" alt=""><img class="edit-icon hidden" src="./images/edit.svg" alt=""><img class="delete-icon hidden" src="./images/delete.svg" alt=""><img class="red-delete-icon hidden" src="./images/red-delete.svg" alt="">';
+
 let userName = document.querySelector('.user-name');
 
 let modal = document.querySelectorAll('.modal');
 let overlay = document.querySelector('.overlay');
 let closeModalBtn = document.querySelectorAll('.close-modal');
 let cancelModalBtn = document.querySelectorAll('.cancel-modal');
+
+let editNoteModal = document.querySelector('.update-note-modal');
+let modalInput = document.querySelector('.modal-input');
 
 let noteSection = document.querySelector('.top-section');
 let addSearchDiv = document.querySelector('.add-and-search-icons');
@@ -25,7 +30,6 @@ let date = new Date();
 let today = date.getDate();
 let month = date.getMonth();
 let year = date.getFullYear();
-
 let monthNames = [
   'Jan',
   'Feb',
@@ -41,14 +45,24 @@ let monthNames = [
   'Dec',
 ];
 
-let note = document.querySelectorAll('.note');
 let noteList = document.querySelector('.note-list');
+let noteBar = document.querySelectorAll('.note');
 
 let addMessage = document.querySelector('.add-message');
 let searchMessage = document.querySelector('.search-message');
 let notesMessage = document.querySelector('.notes-message');
 
+let uncheckedIcon = document.querySelectorAll('.unchecked-icon');
+let checkedIcon = document.querySelectorAll('.checked-icon');
+let lineThrough = document.querySelectorAll('.line-through');
+let tasks = document.querySelectorAll('.task');
 
+let blackEditIcon = document.querySelectorAll('.edit-icon');
+let colorEditIcon = document.querySelectorAll('.color-edit-icon');
+
+let deleteIcon = document.querySelectorAll('.delete-icon');
+let redDeleteIcon = document.querySelectorAll('.red-delete-icon');
+let deleteNoteModal = document.querySelector('.delete-note-modal');
 
 //set name
 if (localStorage.getItem('Name') == null) {
@@ -83,37 +97,56 @@ for (let i = 0; i < modal.length; i++) {
 
 //top section :
 add.addEventListener('mouseenter', () => {
-  if (noteInput.value === '') submitBtn.classList.add('hidden');
+  if (noteInput.value.trim() !== '') {
+    submitBtn.classList.remove('hidden');
+  } else {
+    submitBtn.classList.add('hidden');
+  }
   addSearchDiv.classList.add('hidden');
   submitBar.classList.remove('hidden');
   noteInput.classList.remove('hidden');
   noteInput.focus();
-  // submitBtn.classList.add('hidden');
 });
 
 noteInput.addEventListener('input', () => {
-  if (noteInput.value.trim() !== '') { submitBtn.classList.remove('hidden'); } else {submitBtn.classList.add('hidden'); }
+  if (noteInput.value.trim() !== '') {
+    submitBtn.classList.remove('hidden');
+  } else {
+    submitBtn.classList.add('hidden');
+  }
+});
+
+submitBar.addEventListener('submit', e => {
+  e.preventDefault();
+
+  submitBtn.classList.add('hidden');
+  noteInput.value = '';
 });
 
 submitBar.addEventListener('mouseleave', () => {
   addSearchDiv.classList.remove('hidden');
   submitBar.classList.add('hidden');
   noteInput.classList.add('hidden');
-  // if (addmyNotes.length !== 0) noteInput.value = '';
 });
 
 search.addEventListener('mouseenter', () => {
-  if (searchNote.value === '') clearLoupe.classList.add('hidden');
+  if (searchNote.value.trim() !== '') {
+    clearLoupe.classList.remove('hidden');
+  } else {
+    clearLoupe.classList.add('hidden');
+  }
   addSearchDiv.classList.add('hidden');
   searchBar.classList.remove('hidden');
   searchNote.classList.remove('hidden');
   searchNote.focus();
-  // clearLoupe.classList.add('hidden');
-  // colorClearLoupe.classList.add('hidden');
 });
 
 searchNote.addEventListener('input', () => {
-  if (searchNote.value !== '') clearLoupe.classList.remove('hidden');
+  if (searchNote.value.trim() !== '') {
+    clearLoupe.classList.remove('hidden');
+  } else {
+    clearLoupe.classList.add('hidden');
+  }
 });
 
 clearLoupe.addEventListener('mouseenter', () => {
@@ -126,12 +159,22 @@ colorClearLoupe.addEventListener('mouseleave', () => {
   colorClearLoupe.classList.add('hidden');
 });
 
+colorClearLoupe.addEventListener('click', e => {
+  e.preventDefault();
+  colorClearLoupe.classList.add('hidden');
+  clearLoupe.classList.add('hidden');
+  searchNote.value = '';
+});
+
 searchBar.addEventListener('mouseleave', () => {
   addSearchDiv.classList.remove('hidden');
   searchBar.classList.add('hidden');
   searchNote.classList.add('hidden');
-  // if (searchNote.value !== 0) searchNote.value = '';
 });
+
+// // search :
+// // if no results
+// // searchMessage.innerHTML = `the ${noteInput.value} note is saved ;-)`;
 
 // greeting date :
 let ordinalNumbers = () => {
@@ -148,22 +191,12 @@ let ordinalNumbers = () => {
   return ordinalIndicator;
 };
 
-
-
 document.querySelector('.date').textContent = `${today}${ordinalNumbers()} ${
   monthNames[month]
 }, ${year}`;
 
-//note :
-
-
 //submit :
 
-
-// let noteContentP1 =
-//   '<div class="note-list"><div class="note flex"><img class="checked-icon hidden" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">';
-// let noteContentP2 =
-//   '<span class="line-through hidden"></span></p><img class="color-edit-icon hidden" src="./images/color-edit.svg" alt=""><img class="edit-icon hidden" src="./images/edit.svg" alt=""><img class="delete-icon hidden" src="./images/delete.svg" alt=""><img class="red-delete-icon hidden" src="./images/red-delete.svg" alt=""></div>';
 // let note = noteInput.value;
 // localStorage.setItem('notes', note);
 
@@ -213,6 +246,7 @@ document.querySelector('.date').textContent = `${today}${ordinalNumbers()} ${
 //   newDiv.appendChild(newEditIcon);
 //   newDiv.appendChild(newRedDeleteIcon);
 // };
+
 // let myNotes = [];
 
 // let noteInput.value = noteInput.value;
@@ -233,47 +267,47 @@ let myNotes = [];
 //   submitBtn.classList.add('hidden');
 // })
 
-submitBar.addEventListener('submit', e => {
-  e.preventDefault();
-  // let localItems = JSON.parse(localStorage.getItem(localItems));
-  // if (localItems === null) {
-    //   myNotes = [];
-    // } else {
-      //   myNotes = localItems;
-      // }
-  let localItems = JSON.parse(localStorage.getItem(newNote));
-  if (localItems == null) {
-    myNotes = [];
-  } else {
-    myNotes = JSON.parse(localItems);
-  }
-  myNotes.push(noteInput.value);
-  localStorage.setItem('newNote', JSON.stringify(myNotes));
-  ShowNotes();
-  });
+// submitBar.addEventListener('submit', e => {
+//   e.preventDefault();
+//   // let localItems = JSON.parse(localStorage.getItem(localItems));
+//   // if (localItems === null) {
+//   //   myNotes = [];
+//   // } else {
+//   //   myNotes = localItems;
+//   // }
+//   let localItems = JSON.parse(localStorage.getItem(newNote));
+//   if (localItems == null) {
+//     myNotes = [];
+//   } else {
+//     myNotes = JSON.parse(localItems);
+//   }
+//   myNotes.push(noteInput.value);
+//   localStorage.setItem('newNote', JSON.stringify(myNotes));
+//   ShowNotes();
+// });
 
-let ShowNotes = () => {
-  let localItems = JSON.parse(localStorage.getItem(newNote));
-  if (localItems == null) {
-    myNotes = [];
-  } else {
-    myNotes = JSON.parse(localItems);
-  }
+// let ShowNotes = () => {
+//   let localItems = JSON.parse(localStorage.getItem(newNote));
+//   if (localItems == null) {
+//     myNotes = [];
+//   } else {
+//     myNotes = JSON.parse(localItems);
+//   }
 
-  notesMessage.innerHTML = '';
-  myNotes.push(noteInput.value);
-  localStorage.setItem('newNote', JSON.stringify(myNotes));
-  myNotes.forEach((element, i) => {
-    noteList.innerHTML += `<div class="note flex"><img class="checked-icon" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">'${element}<span class="line-through"></span></p><img class="color-edit-icon" src="./images/color-edit.svg" alt=""><img class="edit-icon" src="./images/edit.svg" alt=""><img class="delete-icon" src="./images/delete.svg" alt=""><img class="red-delete-icon" src="./images/red-delete.svg" alt=""></div>`;
-    myNotes.push(noteInput.value)
-    addMessage.classList.remove('hidden');
-    addMessage.innerHTML = `the ${noteInput.value} note is saved ;-)`;
-    noteInput.value = '';
-    submitBtn.classList.add('hidden');
-    return myNotes;
-  })
-}
-      // localStorage.setItem('localItems', JSON.stringify(myNotes));
+//   notesMessage.innerHTML = '';
+//   myNotes.push(noteInput.value);
+//   localStorage.setItem('newNote', JSON.stringify(myNotes));
+//   myNotes.forEach((element, i) => {
+//     noteList.innerHTML += `<div class="note flex"><img class="checked-icon" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">'${element}<span class="line-through"></span></p><img class="color-edit-icon" src="./images/color-edit.svg" alt=""><img class="edit-icon" src="./images/edit.svg" alt=""><img class="delete-icon" src="./images/delete.svg" alt=""><img class="red-delete-icon" src="./images/red-delete.svg" alt=""></div>`;
+//     myNotes.push(noteInput.value);
+//     addMessage.classList.remove('hidden');
+//     addMessage.innerHTML = `the ${noteInput.value} note is saved ;-)`;
+//     noteInput.value = '';
+//     submitBtn.classList.add('hidden');
+//     return myNotes;
+//   });
+// };
+// // localStorage.setItem('localItems', JSON.stringify(myNotes));
 
 // window.addEventListener('load', () => {
 //   ShowNotes();
@@ -296,15 +330,7 @@ let ShowNotes = () => {
 //   }
 // });
 
-
-
-
-
-
-
-
-    
-    // myNotes = JSON.parse(localStorage.setItem('myNotes'));
+// myNotes = JSON.parse(localStorage.setItem('myNotes'));
 
 //     // myNotes = JSON.parse(localStorage.getItem('myNotes'));
 //     //     // for (let i = 0; i < localStorage.getItem(myNotes).length)
@@ -319,129 +345,74 @@ let ShowNotes = () => {
 // console.log(myNotes);
 // console.log(getData());
 
+// check/uncheck note
+for (let i = 0; i < noteList.childElementCount; i++) {
+  tasks[i].addEventListener('click', () => {
+    checkedIcon[i].classList.toggle('hidden');
+    uncheckedIcon[i].classList.toggle('hidden');
+    lineThrough[i].classList.toggle('hidden');
+  });
+  uncheckedIcon[i].addEventListener('click', () => {
+    checkedIcon[i].classList.remove('hidden');
+    uncheckedIcon[i].classList.add('hidden');
+    lineThrough[i].classList.remove('hidden');
+  });
+  checkedIcon[i].addEventListener('click', () => {
+    checkedIcon[i].classList.add('hidden');
+    uncheckedIcon[i].classList.remove('hidden');
+    lineThrough[i].classList.add('hidden');
+  });
+}
 
+// Edit / Update note
+for (let j = 0; j < noteList.childElementCount; j++) {
+  blackEditIcon[j].addEventListener('mouseenter', () => {
+    blackEditIcon[j].classList.add('hidden');
+    colorEditIcon[j].classList.remove('hidden');
+  });
+  colorEditIcon[j].addEventListener('mouseleave', () => {
+    blackEditIcon[j].classList.remove('hidden');
+    colorEditIcon[j].classList.add('hidden');
+  });
+  colorEditIcon[j].addEventListener('click', () => {
+    editNoteModal.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+    modalInput.focus();
+  });
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // update :
 // let updateBtn = document.querySelector('.update-btn');
 
-// // check/uncheck note
-// let uncheckedIcon = document.querySelectorAll('.unchecked-icon');
-// let checkedIcon = document.querySelectorAll('.checked-icon');
-// let lineThrough = document.querySelectorAll('.line-through');
-// let tasks = document.querySelectorAll('.task');
-// for (let i = 0; i < myNotes.length; i++) {
-//   // checkedIcon[i].classList.add('hidden');
-//   // uncheckedIcon[i].classList.remove('hidden');
-//   // lineThrough[i].classList.add('hidden');
 
-//   tasks[i].addEventListener('click', () => {
-//     checkedIcon[i].classList.remove('hidden');
-//     uncheckedIcon[i].classList.add('hidden');
-//     lineThrough[i].classList.remove('hidden');
-//   });
-//   uncheckedIcon[i].addEventListener('click', () => {
-//     checkedIcon[i].classList.remove('hidden');
-//     uncheckedIcon[i].classList.add('hidden');
-//     lineThrough[i].classList.remove('hidden');
-//   });
-//   checkedIcon[i].addEventListener('click', () => {
-//     checkedIcon[i].classList.add('hidden');
-//     uncheckedIcon[i].classList.remove('hidden');
-//     lineThrough[i].classList.add('hidden');
-//   });
-// }
 
-// // Edit note
-// let blackEditIcon = document.querySelectorAll('.edit-icon');
-// let colorEditIcon = document.querySelectorAll('.color-edit-icon');
-// let editnoteModal = document.querySelector('.update-note-modal');
-// let modalInput = document.querySelector('.modal-input');
 
-// for (let j = 0; j < blackEditIcon.length; j++) {
-//   blackEditIcon[j].addEventListener('mouseenter', () => {
-//     blackEditIcon[j].classList.add('hidden');
-//     colorEditIcon[j].classList.remove('hidden');
-//   });
-//   colorEditIcon[j].addEventListener('mouseleave', () => {
-//     blackEditIcon[j].classList.remove('hidden');
-//     colorEditIcon[j].classList.add('hidden');
-//   });
-//   colorEditIcon[j].addEventListener('click', () => {
-//     editnoteModal.classList.remove('hidden');
-//     overlay.classList.remove('hidden');
-//     modalInput.focus();
-//   });
-// }
 
-// // Delete note
-// let deleteIcon = document.querySelectorAll('.delete-icon');
-// let redDeleteIcon = document.querySelectorAll('.red-delete-icon');
-// let deletenoteModal = document.querySelector('.delete-note-modal');
+// Delete note
+for (let j = 0; j < noteList.childElementCount; j++) {
+  noteBar[j].addEventListener('mouseenter', () => {
+    blackEditIcon[j].classList.remove('hidden');
+    deleteIcon[j].classList.remove('hidden');
+  });
+  noteBar[j].addEventListener('mouseleave', () => {
+    blackEditIcon[j].classList.add('hidden');
+    deleteIcon[j].classList.add('hidden');
+    colorEditIcon[j].classList.add('hidden');
+    redDeleteIcon[j].classList.add('hidden');
+  });
+  deleteIcon[j].addEventListener('mouseenter', () => {
+    deleteIcon[j].classList.add('hidden');
+    redDeleteIcon[j].classList.remove('hidden');
+  });
+  redDeleteIcon[j].addEventListener('mouseleave', () => {
+    deleteIcon[j].classList.remove('hidden');
+    redDeleteIcon[j].classList.add('hidden');
+  });
+  redDeleteIcon[j].addEventListener('click', () => {
+    deleteNoteModal.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+  });
+}
 
-// for (let j = 0; j < blackEditIcon.length; j++) {
-//   note[j].addEventListener('mouseenter', () => {
-//     blackEditIcon[j].classList.remove('hidden');
-//     deleteIcon[j].classList.remove('hidden');
-//   });
-//   note[j].addEventListener('mouseleave', () => {
-//     blackEditIcon[j].classList.add('hidden');
-//     deleteIcon[j].classList.add('hidden');
-//     colorEditIcon[j].classList.add('hidden');
-//     redDeleteIcon[j].classList.add('hidden');
-//   });
-//   deleteIcon[j].addEventListener('mouseenter', () => {
-//     deleteIcon[j].classList.add('hidden');
-//     redDeleteIcon[j].classList.remove('hidden');
-//   });
-//   redDeleteIcon[j].addEventListener('mouseleave', () => {
-//     deleteIcon[j].classList.remove('hidden');
-//     redDeleteIcon[j].classList.add('hidden');
-//   });
-//   redDeleteIcon[j].addEventListener('click', () => {
-//     deletenoteModal.classList.remove('hidden');
-//     overlay.classList.remove('hidden');
-//   });
-// }
-
-// // remove :
 // let deleteNote = document.querySelector('.delete-btn');
 // for (let i = 0; i < myNotes.length; i++) {
 //   deleteNote.addEventListener('click', e => {
@@ -458,15 +429,3 @@ let ShowNotes = () => {
 //     overlay.classList.add('hidden');
 //   });
 // }
-
-// // del note
-
-// // search :
-// colorClearLoupe.addEventListener('click', e => {
-//   e.preventDefault();
-//   searchNote.value = '';
-//   colorClearLoupe.classList.add('hidden');
-//   // clearLoupe.classList.add('hidden');
-// });
-// // if no results
-// // searchMessage.innerHTML = `the ${noteInput.value} note is saved ;-)`;
