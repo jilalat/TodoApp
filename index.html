@@ -33,78 +33,35 @@
 
         <div class="right-section">
           <div class="top-section">
-            <!-- <img src="./images/TodoTasks.svg" alt=""> -->
             <div class="add-and-search-icons flex">
               <div class="add-and-search"><img class="add" src="./images/add.svg" alt="search"></div>
               <div class="add-and-search "><img class="search" src="./images/search.svg" alt="search"></div>
             </div>
-            <div class="add-message hidden"></div>
-            <div class="search-message hidden"></div>
-
 
             <form class="add-and-search-section submit-bar flex-btwn hidden">
               <input type="text" required placeholder="Add your note here.." class="add-note hidden input">
               <input type="submit" value="Submit" class="submit-btn hidden input">
             </form>
+
             <div class="add-and-search-section search-bar flex-btwn hidden">
               <input type="text" placeholder="Search" class="search-note hidden input">
               <img class="clear-loupe hidden" src="./images/clear-loupe.svg" alt="search">
               <img class="color-clear-loupe hidden" src="./images/color-clear-loupe.svg" alt="search">
-              <!-- <img class="loupe hidden" src="./images/loupe.svg" alt="search"> -->
-              <!-- <span class="close-modal">&times;</span> -->
             </div>
+
             <div class="greeting">
               <p>Good Morning, <span class="user-name"></span> !</p>
               <p class="date">27th Feb, 2020</p>
             </div>
           </div>
-          <div class="note-list">
-            <!-- <div class="note flex"><img class="checked-icon hidden" src="./images/checked.svg" alt=""><img
-                class="unchecked-icon" src="./images/unchecked.svg" alt="">
-              <p class="task">sfbsvsdfbsf<span class="line-through hidden"></span></p><img
-                class="color-edit-icon hidden" src="./images/color-edit.svg" alt=""><img class="edit-icon hidden"
-                src="./images/edit.svg" alt=""><img class="delete-icon hidden" src="./images/delete.svg" alt=""><img
-                class="red-delete-icon hidden" src="./images/red-delete.svg" alt="">
-            </div> -->
-          </div>
+          <div class="note-list"></div>
           <div class="notes-message hidden"></div>
+          <div class="search-message hidden"></div>
         </div>
 
     </section>
-
-
-
-
-
-    <div class="modal update-note-modal hidden">
-      <span class="close-modal">&times;</span>
-
-      <!-- <h3>Are you sure you wont to update this note ??</h3> -->
-      <form class="submit-bar ">
-        <input type="text" required placeholder="Update your note here.." class="modal-input input update-note"><br>
-        <input type="submit" value="Update" class="modal-btns update-btn ">
-        <button class="modal-btns cancel-modal">Cancel</button>
-    </div>
     </form>
-
-
-
-
-
-
-
-
-    <div class="modal delete-note-modal hidden">
-      <span class="close-modal">&times;</span>
-      <h3>Are you sure you wont to delete this note ??</h3>
-      <button class="modal-btns delete-btn">Yes <strong>Delete</strong> it for ever</button>
-      <button class="modal-btns cancel-modal">Cancel</button>
-    </div>
-    <div class="overlay hidden"></div>
   </main>
-
-
-
 
   <script src="script.js"></script>
 </body>

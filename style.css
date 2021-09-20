@@ -269,7 +269,7 @@ h2 {
   left: 0;
 }
 
-.task {
+.noteText {
   margin-left: 13px;
   margin-right: auto;
   font-family: "'Open Sans', sans-serif";
@@ -282,13 +282,17 @@ h2 {
   cursor: pointer;
 }
 
+.note-content {
+  flex: 1;
+}
+
 .line-through {
   background-color: #5551ff;
-  width: 110%;
+  width: 106%;
   height: 2px;
   position: absolute;
-  bottom: 38%;
-  left: -2px;
+  bottom: 37%;
+  left: -3px;
 }
 
 .done-icon {

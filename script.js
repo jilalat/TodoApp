@@ -2,17 +2,6 @@
 
 let userName = document.querySelector('.user-name');
 
-let modal = document.querySelectorAll('.modal');
-let overlay = document.querySelector('.overlay');
-let closeModalBtn = document.querySelectorAll('.close-modal');
-let cancelModalBtn = document.querySelectorAll('.cancel-modal');
-
-let deleteNoteModal = document.querySelector('.delete-note-modal');
-let editNoteModal = document.querySelector('.update-note-modal');
-let modalInput = document.querySelector('.modal-input');
-let deleteBtn = document.querySelector('.delete-btn');
-let updateBtn = document.querySelector('.update-btn');
-
 let noteSection = document.querySelector('.top-section');
 let addSearchDiv = document.querySelector('.add-and-search-icons');
 let add = document.querySelector('.add');
@@ -46,47 +35,41 @@ let monthNames = [
   'Dec',
 ];
 
-let noteList = document.querySelector('.note-list');
-let noteBar = document.querySelectorAll('.note');
+let notesContainer = document.querySelector('.note-list');
 
 let addMessage = document.querySelector('.add-message');
 let searchMessage = document.querySelector('.search-message');
 let notesMessage = document.querySelector('.notes-message');
 
-let uncheckedIcon = document.querySelector('.unchecked-icon');
-let checkedIcon = document.querySelector('.checked-icon');
-let lineThrough = document.querySelector('.line-through');
-let tasks = document.querySelector('.task');
-
-let blackEditIcon = document.querySelector('.edit-icon');
-let colorEditIcon = document.querySelector('.color-edit-icon');
-
-let deleteIcon = document.querySelector('.delete-icon');
-let redDeleteIcon = document.querySelector('.red-delete-icon');
-
-// modals & overlay
-for (let i = 0; i < modal.length; i++) {
-  cancelModalBtn[i].addEventListener('click', () => {
-    modal[i].classList.add('hidden');
-    overlay.classList.add('hidden');
-  });
-  overlay.addEventListener('click', () => {
-    modal[i].classList.add('hidden');
-    overlay.classList.add('hidden');
-  });
-  closeModalBtn[i].addEventListener('click', () => {
-    modal[i].classList.add('hidden');
-    overlay.classList.add('hidden');
-  });
-  document.addEventListener('keydown', esc => {
-    if (esc.key === 'Escape' && !modal[i].classList.contains('hidden')) {
-      modal[i].classList.add('hidden');
-      overlay.classList.add('hidden');
-    }
-  });
+//set name
+if (localStorage.getItem('Name') == null) {
+  let setName = prompt('Add You Name here Please ..');
+  localStorage.setItem('Name', setName);
+  userName.innerHTML = localStorage.getItem('Name');
+} else {
+  userName.innerHTML = localStorage.getItem('Name');
 }
 
-//submit :
+// greeting date :
+let ordinalNumbers = () => {
+  let ordinalIndicator;
+  if (today === 1) {
+    ordinalIndicator = 'st';
+  } else if (today === 2) {
+    ordinalIndicator = 'nd';
+  } else if (today === 3) {
+    ordinalIndicator = 'rd';
+  } else {
+    ordinalIndicator = 'th';
+  }
+  return ordinalIndicator;
+};
+
+document.querySelector('.date').textContent = `${today}${ordinalNumbers()} ${
+  monthNames[month]
+}, ${year}`;
+
+//submit Bar:
 add.addEventListener('mouseenter', () => {
   if (noteInputField.value.trim() !== '') {
     submitBtn.classList.remove('hidden');
@@ -107,31 +90,131 @@ noteInputField.addEventListener('input', () => {
   }
 });
 
-let submitNotes = JSON.parse(localStorage.getItem('arr'))
-  ? JSON.parse(localStorage.getItem('arr'))
-  : [];
-
-let addNewNoteBar = () => {
-  submitNotes.push(noteInputField.value);
-  localStorage.setItem('arr', JSON.stringify(submitNotes));
-  noteList.innerHTML += `<div class="note flex"><img class="checked-icon hidden" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">${noteInputField.value}<span class="line-through hidden"></span></p><img class="color-edit-icon hidden" src="./images/color-edit.svg" alt=""><img class="edit-icon hidden" src="./images/edit.svg" alt=""><img class="delete-icon hidden" src="./images/delete.svg" alt=""><img class="red-delete-icon hidden" src="./images/red-delete.svg" alt=""></img></div>`;
-  noteStyle();
-};
-
-submitBar.addEventListener('submit', e => {
-  e.preventDefault();
-  addNewNoteBar();
-  notesMessage.classList.add('hidden');
-  submitBtn.classList.add('hidden');
-  noteInputField.value = '';
-});
-
 submitBar.addEventListener('mouseleave', () => {
   addSearchDiv.classList.remove('hidden');
   submitBar.classList.add('hidden');
   noteInputField.classList.add('hidden');
 });
 
+let addNewNote = () => {
+  submitNotes.push(noteInputField.value);
+  localStorage.setItem('arr', JSON.stringify(submitNotes));
+
+  //create Elements :
+  let newNote = document.createElement('div');
+  let checkedIcon = document.createElement('img');
+  let uncheckedIcon = document.createElement('img');
+  let noteContent = document.createElement('div');
+  let noteTxt = document.createElement('p');
+  let noteValue = document.createTextNode(noteInputField.value);
+  let lineThrough = document.createElement('span');
+  let deleteIcon = document.createElement('img');
+  let redDeleteIcon = document.createElement('img');
+
+  //create Classes :
+  newNote.setAttribute('class', 'note flex');
+  checkedIcon.setAttribute('src', './images/checked.svg');
+  checkedIcon.setAttribute('class', 'checked-icon hidden');
+  uncheckedIcon.setAttribute('src', './images/unchecked.svg');
+  uncheckedIcon.setAttribute('class', 'unchecked-icon');
+  noteContent.setAttribute('class', 'note-content flex');
+  noteTxt.setAttribute('class', 'noteText');
+  lineThrough.setAttribute('class', 'line-through hidden');
+  deleteIcon.setAttribute('src', './images/delete.svg');
+  deleteIcon.setAttribute('class', 'delete-icon hidden');
+  redDeleteIcon.setAttribute('src', './images/red-delete.svg');
+  redDeleteIcon.setAttribute('class', 'red-delete-icon hidden');
+
+  //Append Child :
+  notesContainer.appendChild(newNote);
+  newNote.appendChild(checkedIcon);
+  newNote.appendChild(uncheckedIcon);
+  newNote.appendChild(noteContent);
+  noteContent.appendChild(noteTxt);
+  noteContent.appendChild(deleteIcon);
+  noteContent.appendChild(redDeleteIcon);
+  noteTxt.appendChild(noteValue);
+  noteTxt.appendChild(lineThrough);
+
+  // notesContainer.innerHTML += newNote;
+
+  //Add Styles
+
+  //Note Hover
+  newNote.addEventListener('mouseenter', () => {
+    deleteIcon.classList.remove('hidden');
+  });
+  newNote.addEventListener('mouseleave', () => {
+    deleteIcon.classList.add('hidden');
+    redDeleteIcon.classList.add('hidden');
+  });
+  // check/uncheck note
+  // noteTxt.addEventListener('click', () => {
+  //   checkedIcon.classList.remove('hidden');
+  //   uncheckedIcon.classList.add('hidden');
+  //   lineThrough.classList.remove('hidden');
+  //   newNote.style.backgroundColor = 'pink';
+  // });
+  // lineThrough.addEventListener('click', () => {
+  //   checkedIcon.classList.add('hidden');
+  //   uncheckedIcon.classList.remove('hidden');
+  //   lineThrough.classList.add('hidden');
+  //   newNote.style.backgroundColor = 'white';
+  // });
+  uncheckedIcon.addEventListener('click', () => {
+    checkedIcon.classList.remove('hidden');
+    uncheckedIcon.classList.add('hidden');
+    lineThrough.classList.remove('hidden');
+    newNote.style.backgroundColor = 'pink';
+  });
+  checkedIcon.addEventListener('click', () => {
+    checkedIcon.classList.add('hidden');
+    uncheckedIcon.classList.remove('hidden');
+    lineThrough.classList.add('hidden');
+    newNote.style.backgroundColor = 'white';
+  });
+
+  // Delete note
+  deleteIcon.addEventListener('mouseenter', () => {
+    deleteIcon.classList.add('hidden');
+    redDeleteIcon.classList.remove('hidden');
+  });
+  redDeleteIcon.addEventListener('mouseleave', () => {
+    deleteIcon.classList.remove('hidden');
+    redDeleteIcon.classList.add('hidden');
+  });
+
+  redDeleteIcon.addEventListener('click', e => {
+    e.preventDefault();
+    let deleteNote = window.confirm(
+      'Are you sure you wont to delete this note ??'
+    );
+    if (deleteNote === true) {
+      let noteIndex = noteContent.children[0].innerText;
+      if (submitNotes.includes(noteIndex)) {
+        submitNotes.splice(submitNotes.indexOf(noteIndex), 1);
+        noteContent.parentNode.remove();
+      }
+      noNotes();
+      localStorage.setItem('arr', JSON.stringify(submitNotes));
+    }
+  });
+};
+
+let submitNotes = JSON.parse(localStorage.getItem('arr'))
+  ? JSON.parse(localStorage.getItem('arr'))
+  : [];
+
+submitBar.addEventListener('submit', e => {
+  e.preventDefault();
+  addNewNote();
+  notesMessage.classList.add('hidden');
+  notesMessage.classList.add('hidden');
+  submitBtn.classList.add('hidden');
+  noteInputField.value = '';
+});
+
+//search Bar
 search.addEventListener('mouseenter', () => {
   if (searchNote.value.trim() !== '') {
     clearLoupe.classList.remove('hidden');
@@ -179,148 +262,29 @@ searchBar.addEventListener('mouseleave', () => {
 // // if no results
 // // searchMessage.innerHTML = `the ${noteInputField.value} note is saved ;-)`;
 
-//set name
-if (localStorage.getItem('Name') == null) {
-  let setName = prompt('Add You Name here Please ..');
-  localStorage.setItem('Name', setName);
-  userName.innerHTML = localStorage.getItem('Name');
-} else {
-  userName.innerHTML = localStorage.getItem('Name');
-}
 
-// greeting date :
-let ordinalNumbers = () => {
-  let ordinalIndicator;
-  if (today === 1) {
-    ordinalIndicator = 'st';
-  } else if (today === 2) {
-    ordinalIndicator = 'nd';
-  } else if (today === 3) {
-    ordinalIndicator = 'rd';
-  } else {
-    ordinalIndicator = 'th';
-  }
-  return ordinalIndicator;
-};
-
-document.querySelector('.date').textContent = `${today}${ordinalNumbers()} ${
-  monthNames[month]
-}, ${year}`;
-
-window.addEventListener('load', () => {
-  if (localStorage.getItem('arr') !== null) {
-    submitNotes.forEach(element => {
-      noteList.innerHTML += `<div class="note flex"><img class="checked-icon hidden" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">${element}<span class="line-through hidden"></span></p><img class="color-edit-icon hidden" src="./images/color-edit.svg" alt=""><img class="edit-icon hidden" src="./images/edit.svg" alt=""><img class="delete-icon hidden" src="./images/delete.svg" alt=""><img class="red-delete-icon hidden" src="./images/red-delete.svg" alt=""></img></div>`;
-      // noteStyle();
-    });
-  } else {
+// add fct for this
+let noNotes = () => {
+  if (notesContainer.childElementCount === 0) {
     notesMessage.classList.remove('hidden');
     notesMessage.innerHTML = `you dont have any note here :(`;
-  }
-});
-
-let noteStyle = () => {
-  for (let i = 0; i < submitNotes.length; i++) {
-    //note hover :
-    document.querySelectorAll('.note')[i].addEventListener('mouseenter', () => {
-      document.querySelectorAll('.edit-icon')[i].classList.remove('hidden');
-      document.querySelectorAll('.delete-icon')[i].classList.remove('hidden');
-    });
-    document.querySelectorAll('.note')[i].addEventListener('mouseleave', () => {
-      document.querySelectorAll('.edit-icon')[i].classList.add('hidden');
-      document.querySelectorAll('.delete-icon')[i].classList.add('hidden');
-      document.querySelectorAll('.color-edit-icon')[i].classList.add('hidden');
-      document.querySelectorAll('.red-delete-icon')[i].classList.add('hidden');
-    });
-
-    // // check/uncheck note
-
-    document
-      .querySelectorAll('.unchecked-icon')
-      [i].addEventListener('click', () => {
-        document
-          .querySelectorAll('.checked-icon')
-          [i].classList.remove('hidden');
-        document.querySelectorAll('.unchecked-icon')[i].classList.add('hidden');
-        document
-          .querySelectorAll('.line-through')
-          [i].classList.remove('hidden');
-        document.querySelectorAll('.note')[i].style.backgroundColor = 'pink';
-      });
-
-    document
-      .querySelectorAll('.checked-icon')
-      [i].addEventListener('click', () => {
-        document.querySelectorAll('.checked-icon')[i].classList.add('hidden');
-        document
-          .querySelectorAll('.unchecked-icon')
-          [i].classList.remove('hidden');
-        document.querySelectorAll('.line-through')[i].classList.add('hidden');
-        document.querySelectorAll('.note')[i].style.backgroundColor = 'white';
-      });
-
-    // Edit / Update note
-    document
-      .querySelectorAll('.edit-icon')
-      [i].addEventListener('mouseenter', () => {
-        document.querySelectorAll('.edit-icon')[i].classList.add('hidden');
-        document
-          .querySelectorAll('.color-edit-icon')
-          [i].classList.remove('hidden');
-      });
-    document
-      .querySelectorAll('.color-edit-icon')
-      [i].addEventListener('mouseleave', () => {
-        document.querySelectorAll('.edit-icon')[i].classList.remove('hidden');
-        document
-          .querySelectorAll('.color-edit-icon')
-          [i].classList.add('hidden');
-      });
-    document
-      .querySelectorAll('.color-edit-icon')
-      [i].addEventListener('click', () => {
-        editNoteModal.classList.remove('hidden');
-        overlay.classList.remove('hidden');
-        modalInput.focus();
-      });
-
-    // Delete note
-    document
-      .querySelectorAll('.delete-icon')
-      [i].addEventListener('mouseenter', () => {
-        document.querySelectorAll('.delete-icon')[i].classList.add('hidden');
-        document
-          .querySelectorAll('.red-delete-icon')
-          [i].classList.remove('hidden');
-      });
-    document
-      .querySelectorAll('.red-delete-icon')
-      [i].addEventListener('mouseleave', () => {
-        document.querySelectorAll('.delete-icon')[i].classList.remove('hidden');
-        document
-          .querySelectorAll('.red-delete-icon')
-          [i].classList.add('hidden');
-      });
-    document
-      .querySelectorAll('.red-delete-icon')
-      [i].addEventListener('click', () => {
-        deleteNoteModal.classList.remove('hidden');
-        overlay.classList.remove('hidden');
-      });
-  }
+  };
 };
-
-// deleteBtn
-deleteBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  // submitNotes = JSON.parse(localStorage.getItem('arr'));
-      let noteIndex = document.querySelector('.task').innerText;
-    submitNotes.splice(submitNotes.indexOf(noteIndex), 1);
-    localStorage.setItem('arr', JSON.stringify(submitNotes));
-  deleteNoteModal.classList.add('hidden');
-  overlay.classList.add('hidden');
+// noNotes();
 
 
-});
 
-//updateBtn
+// window.addEventListener('load', () => {
+//   if (localStorage.getItem('arr') !== null) {
+
+//     // || localStorage.getItem('arr') !== null
+
+//     for (let i = 0; i < submitNotes.length; i++) {
+//       noteList.innerHTML += `<div class="note flex"><img class="checked-icon" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">${submitNotes[i]}<span class="line-through"></span></p><img class="color-edit-icon" src="./images/color-edit.svg" alt=""><img class="edit-icon" src="./images/edit.svg" alt=""><img class="delete-icon" src="./images/delete.svg" alt=""><img class="red-delete-icon" src="./images/red-delete.svg" alt=""></img></div>`;
+
+//     }
+//   } else {
+//     notesMessage.classList.remove('hidden');
+//     notesMessage.innerHTML = `you dont have any note here :(`;
+//   }
+// });
