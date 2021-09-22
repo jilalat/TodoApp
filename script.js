@@ -8,11 +8,11 @@ let add = document.querySelector('.add');
 let search = document.querySelector('.search');
 
 let submitBar = document.querySelector('.submit-bar');
-let noteInputField = document.querySelector('.add-note');
+let noteInputField = document.querySelector('.submit-input');
 let submitBtn = document.querySelector('.submit-btn');
 
 let searchBar = document.querySelector('.search-bar');
-let searchNote = document.querySelector('.search-note');
+let searchInputField = document.querySelector('.search-input');
 let clearLoupe = document.querySelector('.clear-loupe');
 let colorClearLoupe = document.querySelector('.color-clear-loupe');
 
@@ -37,7 +37,6 @@ let monthNames = [
 
 let notesContainer = document.querySelector('.note-list');
 
-let addMessage = document.querySelector('.add-message');
 let searchMessage = document.querySelector('.search-message');
 let notesMessage = document.querySelector('.notes-message');
 
@@ -136,8 +135,6 @@ let addNewNote = () => {
   noteTxt.appendChild(noteValue);
   noteTxt.appendChild(lineThrough);
 
-  // notesContainer.innerHTML += newNote;
-
   //Add Styles
 
   //Note Hover
@@ -148,19 +145,8 @@ let addNewNote = () => {
     deleteIcon.classList.add('hidden');
     redDeleteIcon.classList.add('hidden');
   });
+
   // check/uncheck note
-  // noteTxt.addEventListener('click', () => {
-  //   checkedIcon.classList.remove('hidden');
-  //   uncheckedIcon.classList.add('hidden');
-  //   lineThrough.classList.remove('hidden');
-  //   newNote.style.backgroundColor = 'pink';
-  // });
-  // lineThrough.addEventListener('click', () => {
-  //   checkedIcon.classList.add('hidden');
-  //   uncheckedIcon.classList.remove('hidden');
-  //   lineThrough.classList.add('hidden');
-  //   newNote.style.backgroundColor = 'white';
-  // });
   uncheckedIcon.addEventListener('click', () => {
     checkedIcon.classList.remove('hidden');
     uncheckedIcon.classList.add('hidden');
@@ -183,7 +169,6 @@ let addNewNote = () => {
     deleteIcon.classList.remove('hidden');
     redDeleteIcon.classList.add('hidden');
   });
-
   redDeleteIcon.addEventListener('click', e => {
     e.preventDefault();
     let deleteNote = window.confirm(
@@ -209,30 +194,21 @@ submitBar.addEventListener('submit', e => {
   e.preventDefault();
   addNewNote();
   notesMessage.classList.add('hidden');
-  notesMessage.classList.add('hidden');
   submitBtn.classList.add('hidden');
   noteInputField.value = '';
 });
 
 //search Bar
 search.addEventListener('mouseenter', () => {
-  if (searchNote.value.trim() !== '') {
+  if (searchInputField.value.trim() !== '') {
     clearLoupe.classList.remove('hidden');
   } else {
     clearLoupe.classList.add('hidden');
   }
   addSearchDiv.classList.add('hidden');
   searchBar.classList.remove('hidden');
-  searchNote.classList.remove('hidden');
-  searchNote.focus();
-});
-
-searchNote.addEventListener('input', () => {
-  if (searchNote.value.trim() !== '') {
-    clearLoupe.classList.remove('hidden');
-  } else {
-    clearLoupe.classList.add('hidden');
-  }
+  searchInputField.classList.remove('hidden');
+  searchInputField.focus();
 });
 
 clearLoupe.addEventListener('mouseenter', () => {
@@ -245,46 +221,207 @@ colorClearLoupe.addEventListener('mouseleave', () => {
   colorClearLoupe.classList.add('hidden');
 });
 
-colorClearLoupe.addEventListener('click', e => {
-  e.preventDefault();
-  colorClearLoupe.classList.add('hidden');
-  clearLoupe.classList.add('hidden');
-  searchNote.value = '';
-});
-
 searchBar.addEventListener('mouseleave', () => {
   addSearchDiv.classList.remove('hidden');
   searchBar.classList.add('hidden');
-  searchNote.classList.add('hidden');
+  searchInputField.classList.add('hidden');
 });
 
+searchInputField.addEventListener('input', () => {
+  if (searchInputField.value.trim() !== '') {
+    clearLoupe.classList.remove('hidden');
+  } else {
+    clearLoupe.classList.add('hidden');
+  }
+});
+
+let clearContainer = () => {
+  while (notesContainer.hasChildNodes()) {
+    notesContainer.removeChild(notesContainer.firstChild);
+  }
+};
+
 // // search :
-// // if no results
-// // searchMessage.innerHTML = `the ${noteInputField.value} note is saved ;-)`;
+searchInputField.addEventListener('keyup', () => {
+  clearContainer();
+  let searchInputValue = searchInputField.value;
+  for (let i = 0; i < submitNotes.length; i++) {
+    let newNote = document.createElement('div');
+    let checkedIcon = document.createElement('img');
+    let uncheckedIcon = document.createElement('img');
+    let noteContent = document.createElement('div');
+    let noteTxt = document.createElement('p');
+    let noteValue = document.createTextNode(submitNotes[i]);
+    let lineThrough = document.createElement('span');
+    let deleteIcon = document.createElement('img');
+    let redDeleteIcon = document.createElement('img');
+    newNote.setAttribute('class', 'note flex');
+    checkedIcon.setAttribute('src', './images/checked.svg');
+    checkedIcon.setAttribute('class', 'checked-icon hidden');
+    uncheckedIcon.setAttribute('src', './images/unchecked.svg');
+    uncheckedIcon.setAttribute('class', 'unchecked-icon');
+    noteContent.setAttribute('class', 'note-content flex');
+    noteTxt.setAttribute('class', 'noteText');
+    lineThrough.setAttribute('class', 'line-through hidden');
+    deleteIcon.setAttribute('src', './images/delete.svg');
+    deleteIcon.setAttribute('class', 'delete-icon hidden');
+    redDeleteIcon.setAttribute('src', './images/red-delete.svg');
+    redDeleteIcon.setAttribute('class', 'red-delete-icon hidden');
+    notesContainer.appendChild(newNote);
+    newNote.appendChild(checkedIcon);
+    newNote.appendChild(uncheckedIcon);
+    newNote.appendChild(noteContent);
+    noteContent.appendChild(noteTxt);
+    noteContent.appendChild(deleteIcon);
+    noteContent.appendChild(redDeleteIcon);
+    noteTxt.appendChild(noteValue);
+    noteTxt.appendChild(lineThrough);
+    newNote.addEventListener('mouseenter', () => {
+      deleteIcon.classList.remove('hidden');
+    });
+    newNote.addEventListener('mouseleave', () => {
+      deleteIcon.classList.add('hidden');
+      redDeleteIcon.classList.add('hidden');
+    });
+    uncheckedIcon.addEventListener('click', () => {
+      checkedIcon.classList.remove('hidden');
+      uncheckedIcon.classList.add('hidden');
+      lineThrough.classList.remove('hidden');
+      newNote.style.backgroundColor = 'pink';
+    });
+    checkedIcon.addEventListener('click', () => {
+      checkedIcon.classList.add('hidden');
+      uncheckedIcon.classList.remove('hidden');
+      lineThrough.classList.add('hidden');
+      newNote.style.backgroundColor = 'white';
+    });
+    deleteIcon.addEventListener('mouseenter', () => {
+      deleteIcon.classList.add('hidden');
+      redDeleteIcon.classList.remove('hidden');
+    });
+    redDeleteIcon.addEventListener('mouseleave', () => {
+      deleteIcon.classList.remove('hidden');
+      redDeleteIcon.classList.add('hidden');
+    });
+    redDeleteIcon.addEventListener('click', e => {
+      e.preventDefault();
+      let deleteNote = window.confirm(
+        'Are you sure you wont to delete this note ??'
+      );
+      if (deleteNote === true) {
+        let noteIndex = noteContent.children[0].innerText;
+        if (submitNotes.includes(noteIndex)) {
+          submitNotes.splice(submitNotes.indexOf(noteIndex), 1);
+          noteContent.parentNode.remove();
+        }
+        noNotes();
+        localStorage.setItem('arr', JSON.stringify(submitNotes));
+      }
+    });
 
+    if (!submitNotes[i].includes(searchInputValue)) {
+      newNote.style.display = 'none';
+    }
 
-// add fct for this
+    colorClearLoupe.addEventListener('click', e => {
+      e.preventDefault();
+      colorClearLoupe.classList.add('hidden');
+      searchInputField.value = '';
+      searchInputField.focus();
+      clearLoupe.classList.add('hidden');
+      newNote.style.display = '';
+    });
+  }
+});
+
 let noNotes = () => {
   if (notesContainer.childElementCount === 0) {
     notesMessage.classList.remove('hidden');
     notesMessage.innerHTML = `you dont have any note here :(`;
-  };
+  }
 };
-// noNotes();
 
-
-
-// window.addEventListener('load', () => {
-//   if (localStorage.getItem('arr') !== null) {
-
-//     // || localStorage.getItem('arr') !== null
-
-//     for (let i = 0; i < submitNotes.length; i++) {
-//       noteList.innerHTML += `<div class="note flex"><img class="checked-icon" src="./images/checked.svg" alt=""><img class="unchecked-icon" src="./images/unchecked.svg" alt=""><p class="task">${submitNotes[i]}<span class="line-through"></span></p><img class="color-edit-icon" src="./images/color-edit.svg" alt=""><img class="edit-icon" src="./images/edit.svg" alt=""><img class="delete-icon" src="./images/delete.svg" alt=""><img class="red-delete-icon" src="./images/red-delete.svg" alt=""></img></div>`;
-
-//     }
-//   } else {
-//     notesMessage.classList.remove('hidden');
-//     notesMessage.innerHTML = `you dont have any note here :(`;
-//   }
-// });
+window.addEventListener('load', () => {
+  if (
+    localStorage.getItem('arr') === null ||
+    localStorage.getItem('arr') == '[]'
+  ) {
+    noNotes();
+  } else {
+    notesMessage.classList.add('hidden');
+    submitNotes.forEach(element => {
+      let newNote = document.createElement('div');
+      let checkedIcon = document.createElement('img');
+      let uncheckedIcon = document.createElement('img');
+      let noteContent = document.createElement('div');
+      let noteTxt = document.createElement('p');
+      let noteValue = document.createTextNode(element);
+      let lineThrough = document.createElement('span');
+      let deleteIcon = document.createElement('img');
+      let redDeleteIcon = document.createElement('img');
+      newNote.setAttribute('class', 'note flex');
+      checkedIcon.setAttribute('src', './images/checked.svg');
+      checkedIcon.setAttribute('class', 'checked-icon hidden');
+      uncheckedIcon.setAttribute('src', './images/unchecked.svg');
+      uncheckedIcon.setAttribute('class', 'unchecked-icon');
+      noteContent.setAttribute('class', 'note-content flex');
+      noteTxt.setAttribute('class', 'noteText');
+      lineThrough.setAttribute('class', 'line-through hidden');
+      deleteIcon.setAttribute('src', './images/delete.svg');
+      deleteIcon.setAttribute('class', 'delete-icon hidden');
+      redDeleteIcon.setAttribute('src', './images/red-delete.svg');
+      redDeleteIcon.setAttribute('class', 'red-delete-icon hidden');
+      notesContainer.appendChild(newNote);
+      newNote.appendChild(checkedIcon);
+      newNote.appendChild(uncheckedIcon);
+      newNote.appendChild(noteContent);
+      noteContent.appendChild(noteTxt);
+      noteContent.appendChild(deleteIcon);
+      noteContent.appendChild(redDeleteIcon);
+      noteTxt.appendChild(noteValue);
+      noteTxt.appendChild(lineThrough);
+      newNote.addEventListener('mouseenter', () => {
+        deleteIcon.classList.remove('hidden');
+      });
+      newNote.addEventListener('mouseleave', () => {
+        deleteIcon.classList.add('hidden');
+        redDeleteIcon.classList.add('hidden');
+      });
+      uncheckedIcon.addEventListener('click', () => {
+        checkedIcon.classList.remove('hidden');
+        uncheckedIcon.classList.add('hidden');
+        lineThrough.classList.remove('hidden');
+        newNote.style.backgroundColor = 'pink';
+      });
+      checkedIcon.addEventListener('click', () => {
+        checkedIcon.classList.add('hidden');
+        uncheckedIcon.classList.remove('hidden');
+        lineThrough.classList.add('hidden');
+        newNote.style.backgroundColor = 'white';
+      });
+      deleteIcon.addEventListener('mouseenter', () => {
+        deleteIcon.classList.add('hidden');
+        redDeleteIcon.classList.remove('hidden');
+      });
+      redDeleteIcon.addEventListener('mouseleave', () => {
+        deleteIcon.classList.remove('hidden');
+        redDeleteIcon.classList.add('hidden');
+      });
+      redDeleteIcon.addEventListener('click', e => {
+        e.preventDefault();
+        let deleteNote = window.confirm(
+          'Are you sure you wont to delete this note ??'
+        );
+        if (deleteNote === true) {
+          let noteIndex = noteContent.children[0].innerText;
+          if (submitNotes.includes(noteIndex)) {
+            submitNotes.splice(submitNotes.indexOf(noteIndex), 1);
+            noteContent.parentNode.remove();
+          }
+          noNotes();
+          localStorage.setItem('arr', JSON.stringify(submitNotes));
+        }
+      });
+    });
+  }
+});
