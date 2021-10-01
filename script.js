@@ -42,12 +42,19 @@ let searchMessage = document.querySelector('.search-message');
 let notesMessage = document.querySelector('.notes-message');
 
 //set name
-if (localStorage.getItem('Name') == null) {
+let nameGetLocalStorage = localStorage.getItem('Name');
+if (nameGetLocalStorage === null) {
   let setName = prompt('Add You Name here Please ..');
   localStorage.setItem('Name', setName);
-  userName.innerHTML = localStorage.getItem('Name');
+  if (!setName) {
+    userName.textContent = 'Guess';
+  } else {
+    userName.innerHTML = localStorage.getItem('Name');
+  }
+} else if (nameGetLocalStorage == '' || nameGetLocalStorage == 'null') {
+  userName.textContent = 'Guess';
 } else {
-  userName.innerHTML = localStorage.getItem('Name');
+  userName.innerHTML = nameGetLocalStorage;
 }
 
 // greeting date :
@@ -96,7 +103,7 @@ submitBar.addEventListener('mouseleave', () => {
   noteInputField.classList.add('hidden');
 });
 
-let addNewNote = inputValue => {
+let addNewNote = (inputValue, index) => {
   //create Elements :
   let newNote = document.createElement('div');
   let checkedIcon = document.createElement('img');
@@ -116,6 +123,7 @@ let addNewNote = inputValue => {
   uncheckedIcon.setAttribute('class', 'unchecked-icon');
   noteContent.setAttribute('class', 'note-content flex');
   noteTxt.setAttribute('class', 'noteText');
+  noteContent.setAttribute('note-index', index);
   lineThrough.setAttribute('class', 'line-through hidden');
   deleteIcon.setAttribute('src', './images/delete.svg');
   deleteIcon.setAttribute('class', 'delete-icon hidden');
@@ -173,11 +181,7 @@ let addNewNote = inputValue => {
       'Are you sure you wont to delete this note ??'
     );
     if (deleteNote === true) {
-      let noteIndex = noteContent.children[0].innerText;
-      if (submitNotes.includes(noteIndex)) {
-        submitNotes.splice(submitNotes.indexOf(noteIndex), 1);
-        noteContent.parentNode.remove();
-      }
+      submitNotes.splice(index, 1);
       noNotes();
       localStorage.setItem('arr', JSON.stringify(submitNotes));
       refresh(submitNotes);
@@ -186,9 +190,9 @@ let addNewNote = inputValue => {
 };
 
 //submit
-
-let submitNotes = JSON.parse(localStorage.getItem('arr'))
-  ? JSON.parse(localStorage.getItem('arr'))
+let arrGetLocalStorage = localStorage.getItem('arr');
+let submitNotes = JSON.parse(arrGetLocalStorage)
+  ? JSON.parse(arrGetLocalStorage)
   : [];
 
 submitBar.addEventListener('submit', e => {
@@ -201,6 +205,7 @@ submitBar.addEventListener('submit', e => {
   noteInputField.focus();
   submitBtn.classList.add('hidden');
   noteInputField.value = '';
+  searchInputField.value = '';
 });
 
 //search Bar
@@ -264,7 +269,7 @@ searchInputField.addEventListener('keyup', () => {
     }
   });
   if (filtered.length === 0) {
-    clearContainer();
+    notesList.innerHTML = null;
     searchMessage.classList.remove('hidden');
     searchMessage.innerHTML = `your keyword doesn't exist :(`;
   } else {
@@ -281,23 +286,14 @@ let noNotes = () => {
   }
 };
 
-let clearContainer = () => {
-  while (notesList.hasChildNodes()) {
-    notesList.removeChild(notesList.firstChild);
-  }
-};
-
-let refresh = submitNotes => {
-  clearContainer();
-  submitNotes.forEach(element => {
-    addNewNote(element);
+let refresh = refreshArr => {
+  notesList.innerHTML = null;
+  refreshArr.forEach((element, index) => {
+    addNewNote(element, index);
   });
 };
 
-if (
-  localStorage.getItem('arr') === null ||
-  localStorage.getItem('arr') == '[]'
-) {
+if (arrGetLocalStorage === null || arrGetLocalStorage == '[]') {
   noNotes();
 } else {
   refresh(submitNotes);
