@@ -189,25 +189,6 @@ let addNewNote = (inputValue, index) => {
   });
 };
 
-//submit
-let arrGetLocalStorage = localStorage.getItem('arr');
-let submitNotes = JSON.parse(arrGetLocalStorage)
-  ? JSON.parse(arrGetLocalStorage)
-  : [];
-
-submitBar.addEventListener('submit', e => {
-  e.preventDefault();
-  searchMessage.classList.add('hidden');
-  notesMessage.classList.add('hidden');
-  submitNotes.unshift(noteInputField.value);
-  localStorage.setItem('arr', JSON.stringify(submitNotes));
-  refresh(submitNotes);
-  noteInputField.focus();
-  submitBtn.classList.add('hidden');
-  noteInputField.value = '';
-  searchInputField.value = '';
-});
-
 //search Bar
 search.addEventListener('mouseenter', () => {
   if (searchInputField.value.trim() !== '') {
@@ -235,7 +216,7 @@ colorClearLoupe.addEventListener('click', e => {
   e.preventDefault();
   colorClearLoupe.classList.add('hidden');
   clearLoupe.classList.add('hidden');
-  refresh(submitNotes);
+  initialStatus(submitNotes);
   searchInputField.value = '';
   searchInputField.focus();
 });
@@ -256,11 +237,9 @@ searchInputField.addEventListener('input', () => {
 
 // search :
 
-searchInputField.addEventListener('keyup', () => {
-  notesMessage.classList.add('hidden');
+let filteredArr = arr => {
   let searchInputValue = searchInputField.value;
-  let copyOfSubmitNotes = submitNotes.slice();
-  let filtered = copyOfSubmitNotes.filter(note => {
+  let filtered = arr.filter(note => {
     if (note.toLowerCase().includes(searchInputValue)) {
       return note;
     }
@@ -268,14 +247,37 @@ searchInputField.addEventListener('keyup', () => {
       return note;
     }
   });
-  if (filtered.length === 0) {
+  return filtered;
+};
+
+searchInputField.addEventListener('keyup', () => {
+  notesMessage.classList.add('hidden');
+  if (filteredArr(submitNotes).length === 0) {
     notesList.innerHTML = null;
     searchMessage.classList.remove('hidden');
     searchMessage.innerHTML = `your keyword doesn't exist :(`;
   } else {
-    refresh(filtered);
+    refresh(submitNotes);
     searchMessage.classList.add('hidden');
   }
+});
+
+
+//submit
+let arrGetLocalStorage = localStorage.getItem('arr');
+let submitNotes = JSON.parse(arrGetLocalStorage) || [];
+
+submitBar.addEventListener('submit', e => {
+  e.preventDefault();
+  searchMessage.classList.add('hidden');
+  notesMessage.classList.add('hidden');
+  submitNotes.unshift(noteInputField.value);
+  localStorage.setItem('arr', JSON.stringify(submitNotes));
+  refresh(submitNotes);
+  noteInputField.focus();
+  submitBtn.classList.add('hidden');
+  noteInputField.value = '';
+  searchInputField.value = '';
 });
 
 // onLoad
@@ -288,7 +290,15 @@ let noNotes = () => {
 
 let refresh = refreshArr => {
   notesList.innerHTML = null;
-  refreshArr.forEach((element, index) => {
+  let searchedNotes = filteredArr(refreshArr);
+  searchedNotes.forEach((element, index) => {
+    addNewNote(element, index);
+  });
+};
+
+let initialStatus = arr => {
+  notesList.innerHTML = null;
+  arr.forEach((element, index) => {
     addNewNote(element, index);
   });
 };
@@ -298,3 +308,5 @@ if (arrGetLocalStorage === null || arrGetLocalStorage == '[]') {
 } else {
   refresh(submitNotes);
 }
+
+
