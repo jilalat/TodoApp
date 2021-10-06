@@ -238,17 +238,14 @@ searchInputField.addEventListener('input', () => {
 // search :
 
 let filteredArr = arr => {
-  let searchInputValue = searchInputField.value;
+  let searchInputValue = searchInputField.value.toLowerCase();
   let filtered = arr.filter(note => {
-    if (note.toLowerCase().includes(searchInputValue)) {
-      return note;
-    }
-    if (note.toUpperCase().includes(searchInputValue)) {
-      return note;
-    }
+    return note.toUpperCase().includes(searchInputValue) || note.toLowerCase().includes(searchInputValue)
   });
   return filtered;
 };
+
+
 
 searchInputField.addEventListener('keyup', () => {
   notesMessage.classList.add('hidden');
