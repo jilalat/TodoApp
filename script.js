@@ -216,9 +216,9 @@ colorClearLoupe.addEventListener('click', e => {
   e.preventDefault();
   colorClearLoupe.classList.add('hidden');
   clearLoupe.classList.add('hidden');
-  initialStatus(submitNotes);
   searchInputField.value = '';
   searchInputField.focus();
+  refresh(submitNotes);
 });
 
 searchBar.addEventListener('mouseleave', () => {
@@ -270,11 +270,11 @@ submitBar.addEventListener('submit', e => {
   notesMessage.classList.add('hidden');
   submitNotes.unshift(noteInputField.value);
   localStorage.setItem('arr', JSON.stringify(submitNotes));
-  refresh(submitNotes);
   noteInputField.focus();
   submitBtn.classList.add('hidden');
   noteInputField.value = '';
-  searchInputField.value = '';
+  // searchInputField.value = '';
+  refresh(submitNotes);
 });
 
 // onLoad
@@ -287,15 +287,8 @@ let noNotes = () => {
 
 let refresh = refreshArr => {
   notesList.innerHTML = null;
-  let searchedNotes = filteredArr(refreshArr);
+  let searchedNotes = filteredArr(refreshArr) || refreshArr;
   searchedNotes.forEach((element, index) => {
-    addNewNote(element, index);
-  });
-};
-
-let initialStatus = arr => {
-  notesList.innerHTML = null;
-  arr.forEach((element, index) => {
     addNewNote(element, index);
   });
 };
